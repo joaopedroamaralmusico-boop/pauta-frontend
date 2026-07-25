@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pauta · Entrar</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0B0C10;
+    --surface: #15171C;
+    --surface-2: #1E212A;
+    --surface-3: #262A34;
+    --border: #262A33;
+    --border-soft: #1D2028;
+    --text: #ECEAE4;
+    --text-muted: #91939E;
+    --text-faint: #5B5D68;
+    --accent: #F4B942;
+    --accent-dim: #4A3A1A;
+    --accent-ink: #1A1300;
+    --blue: #5FA8DE;
+    --blue-dim: #17222C;
+    --danger: #E8735B;
+    --danger-dim: #2A1815;
+    --radius: 14px;
+    --font-display: 'Space Grotesk', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    position: relative;
+    background:
+      radial-gradient(1200px 500px at 12% -10%, rgba(244,185,66,0.07), transparent 60%),
+      radial-gradient(900px 500px at 100% 0%, rgba(95,168,222,0.05), transparent 55%),
+      var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding: 24px;
+  }
+  body::before{
+    content:"";
+    position: fixed;
+    inset: 0;
+    background: url('assets/texture-bg.png') repeat;
+    background-size: 480px 480px;
+    opacity: 0.05;
+    mix-blend-mode: soft-light;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  ::selection{ background: rgba(244,185,66,0.25); }
+  a, button { font-family: inherit; }
+  button{ cursor:pointer; }
+  button:focus-visible, input:focus-visible, a:focus-visible{
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .auth-wrap{
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 400px;
+  }
+
+  .brand{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:12px;
+    margin-bottom: 24px;
+  }
+  .brand-mark{
+    width:44px; height:44px; border-radius:12px;
+    background: var(--surface-2);
+    display:flex; align-items:center; justify-content:center;
+    overflow: hidden;
+    box-shadow: 0 4px 18px rgba(244,185,66,0.18);
+  }
+  .brand-mark img{
+    width:100%; height:100%; object-fit:cover;
+    mix-blend-mode: lighten;
+  }
+  .brand-mark svg{ width:22px; height:22px; }
+  .brand h1{
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+  }
+  .brand p{
+    margin: 2px 0 0;
+    font-size: 13px;
+    color: var(--text-muted);
+    text-align:center;
+  }
+
+  .panel{
+    background: var(--surface);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius);
+    padding: 28px 26px;
+  }
+
+  .tabs{
+    display:flex;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 3px;
+    gap: 3px;
+    margin-bottom: 22px;
+  }
+  .tabs button{
+    flex:1;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 9px 8px;
+    border-radius: 8px;
+    transition: all .15s ease;
+  }
+  .tabs button.active{
+    background: var(--surface-3);
+    color: var(--text);
+    box-shadow: 0 0 0 1px var(--border);
+  }
+
+  label.field-label{
+    display:block;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--text-muted);
+    margin-bottom: 7px;
+  }
+  .field{ margin-bottom: 16px; }
+
+  input[type="email"], input[type="password"], input[type="text"]{
+    width:100%;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 11px 13px;
+    border-radius: 10px;
+    font-size: 13.5px;
+    font-family: inherit;
+    transition: border-color .15s ease;
+  }
+  input:hover{ border-color: #363B47; }
+  input::placeholder{ color: var(--text-faint); }
+
+  .forgot-link{
+    display:block;
+    text-align:right;
+    font-size: 12px;
+    color: var(--blue);
+    text-decoration:none;
+    margin: -8px 0 16px;
+  }
+  .forgot-link:hover{ text-decoration:underline; }
+
+  .primary-btn{
+    width:100%;
+    background: var(--accent);
+    color: var(--accent-ink);
+    border: none;
+    padding: 13px;
+    border-radius: 10px;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 14px;
+    display:flex; align-items:center; justify-content:center; gap:9px;
+    transition: transform .12s ease, box-shadow .12s ease, opacity .12s ease;
+    box-shadow: 0 6px 20px rgba(244,185,66,0.18);
+  }
+  .primary-btn:hover:not(:disabled){ transform: translateY(-1px); box-shadow: 0 8px 26px rgba(244,185,66,0.28); }
+  .primary-btn:disabled{ opacity:.55; cursor:not-allowed; box-shadow:none; }
+
+  .spinner{
+    width:15px; height:15px;
+    border: 2px solid rgba(26,19,0,0.3);
+    border-top-color: var(--accent-ink);
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
+    flex-shrink:0;
+  }
+  @keyframes spin{ to{ transform: rotate(360deg); } }
+
+  .divider{
+    display:flex; align-items:center; gap:12px;
+    margin: 20px 0;
+    color: var(--text-faint);
+    font-size: 12px;
+  }
+  .divider::before, .divider::after{
+    content:"";
+    flex:1;
+    height:1px;
+    background: var(--border);
+  }
+
+  .google-btn{
+    width:100%;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 12px;
+    border-radius: 10px;
+    font-size: 13.5px;
+    font-weight: 500;
+    display:flex; align-items:center; justify-content:center; gap:10px;
+    transition: all .15s ease;
+  }
+  .google-btn:hover{ border-color: #3A3F4B; background: var(--surface-3); }
+  .google-btn svg{ width:17px; height:17px; flex-shrink:0; }
+
+  .switch-mode{
+    text-align:center;
+    margin-top: 20px;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+  .switch-mode button{
+    background:none; border:none;
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 13px;
+    padding: 0 0 0 4px;
+  }
+  .switch-mode button:hover{ text-decoration:underline; }
+
+  .field-error{
+    font-size:12px;
+    color: var(--danger);
+    margin-top:-10px;
+    margin-bottom:14px;
+    display:none;
+  }
+  .field-error.visible{ display:block; }
+
+  .toast-stack{
+    position: fixed;
+    bottom: 22px; right: 22px;
+    display:flex; flex-direction:column; gap:10px;
+    z-index: 50;
+  }
+  .toast{
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    color: var(--text);
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 13px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    animation: toast-in .2s ease;
+    max-width: 300px;
+  }
+  .toast.error{ border-left-color: var(--danger); }
+  @keyframes toast-in{ from{ opacity:0; transform: translateY(6px); } to{ opacity:1; transform:none; } }
+</style>
+</head>
+<body>
+
+  <div class="auth-wrap">
+
+    <div class="brand">
+      <div class="brand-mark">
+        <img src="assets/logo-mark.png" alt="Pauta"
+             onerror="this.replaceWith(document.getElementById('brand-mark-fallback').content.cloneNode(true))">
+      </div>
+      <template id="brand-mark-fallback"><svg viewBox="0 0 24 24" fill="none" style="width:22px;height:22px;"><path d="M12 2L14.2 9.2L21 12L14.2 14.8L12 22L9.8 14.8L3 12L9.8 9.2L12 2Z" fill="#F4B942"/></svg></template>
+      <h1>Pauta</h1>
+      <p>Seu agente de criação de conteúdo para redes sociais</p>
+    </div>
+
+    <div class="panel">
+
+      <div class="tabs" id="mode-tabs">
+        <button type="button" class="active" data-mode="login">Entrar</button>
+        <button type="button" data-mode="signup">Criar conta</button>
+      </div>
+
+      <form id="auth-form" novalidate>
+        <div class="field">
+          <label class="field-label" for="email-input">E-mail</label>
+          <input type="email" id="email-input" placeholder="voce@exemplo.com" autocomplete="email" required>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="password-input">Senha</label>
+          <input type="password" id="password-input" placeholder="••••••••" autocomplete="current-password" required minlength="6">
+        </div>
+        <div class="field-error" id="password-error">A senha precisa ter pelo menos 6 caracteres.</div>
+
+        <div class="field" id="confirm-password-field" style="display:none;">
+          <label class="field-label" for="confirm-password-input">Confirmar senha</label>
+          <input type="password" id="confirm-password-input" placeholder="••••••••" autocomplete="new-password">
+        </div>
+
+        <a href="#" class="forgot-link" id="forgot-link">Esqueci minha senha</a>
+
+        <button type="submit" class="primary-btn" id="submit-btn">
+          <span id="submit-btn-label">Entrar</span>
+        </button>
+      </form>
+
+      <div class="divider">ou</div>
+
+      <button type="button" class="google-btn" id="google-btn" onclick="loginWithGoogle()">
+        <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M23.52 12.27c0-.85-.08-1.67-.22-2.46H12v4.66h6.47c-.28 1.5-1.13 2.78-2.4 3.63v3.02h3.89c2.28-2.1 3.59-5.19 3.59-8.85z"/><path fill="#34A853" d="M12 24c3.24 0 5.96-1.07 7.95-2.9l-3.89-3.02c-1.08.72-2.45 1.15-4.06 1.15-3.12 0-5.77-2.11-6.71-4.94H1.27v3.11C3.25 21.3 7.31 24 12 24z"/><path fill="#FBBC05" d="M5.29 14.29A7.2 7.2 0 0 1 4.9 12c0-.79.14-1.56.39-2.29V6.6H1.27A11.98 11.98 0 0 0 0 12c0 1.94.46 3.77 1.27 5.4l4.02-3.11z"/><path fill="#EA4335" d="M12 4.77c1.76 0 3.34.61 4.58 1.79l3.44-3.44C17.95 1.19 15.24 0 12 0 7.31 0 3.25 2.7 1.27 6.6l4.02 3.11c.94-2.83 3.59-4.94 6.71-4.94z"/></svg>
+        Continuar com o Google
+      </button>
+
+      <div class="switch-mode" id="switch-mode-text">
+        Não tem conta? <button type="button" id="switch-mode-btn">Criar conta</button>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="toast-stack" id="toast-stack"></div>
+
+  <script>
+    const SUPABASE_URL = 'https://dbqjfgludyionrhjsjxt.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRicWpmZ2x1ZHlpb25yaGpzanh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ5NzM1MTEsImV4cCI6MjEwMDU0OTUxMX0.w1I_AyBCHriy0QBXloimRrMJuycDnl9F3JJb7TPP8Uc';
+
+    // Pra onde levar o usuário depois de logar. Ajuste se hospedar em
+    // outro caminho/subpasta.
+    const REDIRECT_AFTER_LOGIN = 'painel-criacao.html';
+
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    let mode = 'login'; // 'login' | 'signup'
+
+    function showToast(message, type = 'info') {
+      const stack = document.getElementById('toast-stack');
+      const el = document.createElement('div');
+      el.className = 'toast' + (type === 'error' ? ' error' : '');
+      el.textContent = message;
+      stack.appendChild(el);
+      setTimeout(() => el.remove(), 4500);
+    }
+
+    // Se já tem sessão ativa, pula direto pro painel
+    window.addEventListener('DOMContentLoaded', async () => {
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      if (session) {
+        window.location.href = REDIRECT_AFTER_LOGIN;
+      }
+      setupTabs();
+    });
+
+    function setupTabs() {
+      document.querySelectorAll('#mode-tabs button').forEach(btn => {
+        btn.addEventListener('click', () => setMode(btn.dataset.mode));
+      });
+      document.getElementById('switch-mode-btn').addEventListener('click', () => {
+        setMode(mode === 'login' ? 'signup' : 'login');
+      });
+    }
+
+    function setMode(newMode) {
+      mode = newMode;
+      document.querySelectorAll('#mode-tabs button').forEach(b => {
+        b.classList.toggle('active', b.dataset.mode === mode);
+      });
+
+      const confirmField = document.getElementById('confirm-password-field');
+      const forgotLink = document.getElementById('forgot-link');
+      const submitLabel = document.getElementById('submit-btn-label');
+      const switchText = document.getElementById('switch-mode-text');
+
+      if (mode === 'signup') {
+        confirmField.style.display = 'block';
+        forgotLink.style.display = 'none';
+        submitLabel.innerText = 'Criar conta';
+        switchText.innerHTML = 'Já tem conta? <button type="button" id="switch-mode-btn">Entrar</button>';
+      } else {
+        confirmField.style.display = 'none';
+        forgotLink.style.display = 'block';
+        submitLabel.innerText = 'Entrar';
+        switchText.innerHTML = 'Não tem conta? <button type="button" id="switch-mode-btn">Criar conta</button>';
+      }
+      // O botão de trocar de modo foi recriado no innerHTML acima — reanexa o listener
+      document.getElementById('switch-mode-btn').addEventListener('click', () => {
+        setMode(mode === 'login' ? 'signup' : 'login');
+      });
+    }
+
+    document.getElementById('auth-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById('email-input').value.trim();
+      const password = document.getElementById('password-input').value;
+      const confirmPassword = document.getElementById('confirm-password-input').value;
+      const passwordError = document.getElementById('password-error');
+      const submitBtn = document.getElementById('submit-btn');
+      const submitLabel = document.getElementById('submit-btn-label');
+
+      passwordError.classList.remove('visible');
+
+      if (!email || !password) {
+        showToast('Preencha e-mail e senha.', 'error');
+        return;
+      }
+      if (password.length < 6) {
+        passwordError.classList.add('visible');
+        return;
+      }
+      if (mode === 'signup' && password !== confirmPassword) {
+        showToast('As senhas não coincidem.', 'error');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      const originalLabel = submitLabel.innerText;
+      submitLabel.innerHTML = '<span class="spinner"></span> ' + (mode === 'signup' ? 'Criando conta...' : 'Entrando...');
+
+      try {
+        if (mode === 'signup') {
+          const { data, error } = await supabaseClient.auth.signUp({ email, password });
+          if (error) throw error;
+
+          if (data.session) {
+            window.location.href = REDIRECT_AFTER_LOGIN;
+          } else {
+            showToast('Conta criada! Confirme seu e-mail para poder entrar.');
+            setMode('login');
+          }
+        } else {
+          const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+          if (error) throw error;
+          window.location.href = REDIRECT_AFTER_LOGIN;
+        }
+      } catch (err) {
+        showToast(traduzErro(err.message), 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitLabel.innerText = originalLabel;
+      }
+    });
+
+    document.getElementById('forgot-link').addEventListener('click', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email-input').value.trim();
+      if (!email) {
+        showToast('Digite seu e-mail no campo acima primeiro.', 'error');
+        return;
+      }
+      try {
+        const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+          redirectTo: window.location.origin + '/' + REDIRECT_AFTER_LOGIN
+        });
+        if (error) throw error;
+        showToast('Enviamos um link de redefinição de senha para o seu e-mail.');
+      } catch (err) {
+        showToast(traduzErro(err.message), 'error');
+      }
+    });
+
+    async function loginWithGoogle() {
+      try {
+        const { error } = await supabaseClient.auth.signInWithOAuth({
+          provider: 'google',
+          options: { redirectTo: window.location.origin + '/' + REDIRECT_AFTER_LOGIN }
+        });
+        if (error) throw error;
+        // O Supabase redireciona pro Google automaticamente a partir daqui
+      } catch (err) {
+        showToast(traduzErro(err.message), 'error');
+      }
+    }
+
+    function traduzErro(message) {
+      const map = {
+        'Invalid login credentials': 'E-mail ou senha incorretos.',
+        'User already registered': 'Já existe uma conta com esse e-mail.',
+        'Email not confirmed': 'Confirme seu e-mail antes de entrar.',
+      };
+      return map[message] || message || 'Algo deu errado. Tente novamente.';
+    }
+  </script>
+</body>
+</html>
