@@ -147,6 +147,84 @@
     transition: all .15s ease;
   }
   .logout-btn:hover{ color: var(--danger); border-color: rgba(232,115,91,0.4); background: var(--danger-dim); }
+  .plans-btn{
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 7px 13px;
+    border-radius: 999px;
+    font-size: 12.5px;
+    font-weight: 500;
+    transition: all .15s ease;
+  }
+  .plans-btn:hover{ border-color: rgba(244,185,66,0.4); background: var(--accent-dim); color: var(--accent); }
+
+  .modal-overlay{
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.6);
+    display:none;
+    align-items:center; justify-content:center;
+    z-index: 60;
+    padding: 20px;
+  }
+  .modal-overlay.visible{ display:flex; }
+  .modal-box{
+    background: var(--surface);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius);
+    padding: 26px;
+    max-width: 720px;
+    width: 100%;
+    max-height: 88vh;
+    overflow-y: auto;
+  }
+  .modal-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
+  .modal-head h2{ font-family: var(--font-display); font-size:17px; margin:0; }
+  .modal-close{
+    background: var(--surface-2); border: 1px solid var(--border); color: var(--text-muted);
+    width:28px; height:28px; border-radius:8px; display:flex; align-items:center; justify-content:center;
+  }
+  .modal-close:hover{ color:var(--text); }
+
+  .plans-grid{ display:grid; grid-template-columns: repeat(3, 1fr); gap:14px; margin-bottom: 20px; }
+  @media (max-width: 640px){ .plans-grid{ grid-template-columns: 1fr; } }
+  .plan-card{
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px;
+    display:flex; flex-direction:column; gap:10px;
+  }
+  .plan-card.current{ border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+  .plan-name{ font-family: var(--font-display); font-weight:600; font-size:15px; }
+  .plan-price{ font-size:22px; font-weight:700; font-family: var(--font-display); }
+  .plan-price span{ font-size:12px; font-weight:400; color:var(--text-faint); }
+  .plan-desc{ font-size:12.5px; color:var(--text-muted); line-height:1.5; flex-grow:1; }
+  .plan-btn{
+    background: var(--accent); color: var(--accent-ink); border:none;
+    padding: 10px; border-radius:8px; font-weight:600; font-size:13px;
+  }
+  .plan-btn.secondary{ background: var(--surface-3); color: var(--text); }
+  .plan-btn:disabled{ opacity:.6; cursor:default; }
+  .plan-current-tag{
+    align-self:flex-start;
+    background: var(--accent-dim); color: var(--accent);
+    font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:.03em;
+    padding:3px 8px; border-radius:999px;
+  }
+
+  .addon-list{ display:flex; flex-direction:column; gap:8px; }
+  .addon-item{
+    display:flex; justify-content:space-between; align-items:center;
+    background: var(--surface-2); border:1px solid var(--border); border-radius:10px;
+    padding: 12px 14px; font-size:13px;
+  }
+  .addon-item button{
+    background: var(--surface-3); color: var(--text); border:1px solid var(--border);
+    padding: 6px 12px; border-radius:8px; font-size:12.5px; font-weight:500;
+  }
+  .addon-item button:hover{ border-color: rgba(244,185,66,0.4); color: var(--accent); }
+  .addon-locked-note{ font-size:12px; color: var(--text-faint); margin-top:10px; }
 
   .panel{
     background: var(--surface);
@@ -180,6 +258,19 @@
   }
 
   .field-row{ display:grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  input[type="text"]{
+    width:100%;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 11px 13px;
+    border-radius: 10px;
+    font-size: 13.5px;
+    font-family: inherit;
+    transition: border-color .15s ease;
+  }
+  input[type="text"]:hover{ border-color: #363B47; }
+  input[type="text"]::placeholder{ color: var(--text-faint); }
   @media (max-width: 520px){ .field-row{ grid-template-columns: 1fr; } }
 
   .select-wrap{ position: relative; margin-bottom:16px; }
@@ -504,6 +595,7 @@
       </div>
       <div class="header-actions">
         <span class="credits-pill" id="credits-info"><span class="dot"></span>Créditos: ...</span>
+        <button class="plans-btn" onclick="openPlansModal()">Planos</button>
         <button class="logout-btn" onclick="logout()">Sair</button>
       </div>
     </div>
@@ -566,11 +658,8 @@
         <div class="select-wrap">
           <select id="slide-count-select">
             <option value="3">3 slides</option>
-            <option value="4">4 slides</option>
             <option value="5" selected>5 slides</option>
-            <option value="6">6 slides</option>
             <option value="7">7 slides</option>
-            <option value="8">8 slides</option>
           </select>
         </div>
       </div>
@@ -584,6 +673,11 @@
             <option value="60">60 segundos</option>
           </select>
         </div>
+      </div>
+
+      <div class="field" style="margin-top:16px;">
+        <label class="field-label" for="tags-input">Tags que você quer incluir <span style="font-weight:400;color:var(--text-faint);">(opcional)</span></label>
+        <input type="text" id="tags-input" placeholder="Ex: maternidade, primeiraviagem, rotina (separadas por vírgula)">
       </div>
 
       <button class="generate-btn" id="generate-btn" onclick="generateContent()">
@@ -631,6 +725,27 @@
 
   </div>
 
+  <div class="modal-overlay" id="plans-modal-overlay">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h2>Planos</h2>
+        <button class="modal-close" onclick="closePlansModal()" aria-label="Fechar">✕</button>
+      </div>
+
+      <div class="plans-grid" id="plans-grid"><!-- preenchido via JS --></div>
+
+      <div id="addon-section" style="display:none;">
+        <h2 class="panel-title" style="font-size:13px;">Créditos avulsos (exclusivo para o plano Pró)</h2>
+        <div class="addon-list">
+          <div class="addon-item"><span>50 créditos — R$ 19,90</span><button onclick="buyAddon('50')">Comprar</button></div>
+          <div class="addon-item"><span>100 créditos — R$ 34,90</span><button onclick="buyAddon('100')">Comprar</button></div>
+          <div class="addon-item"><span>200 créditos — R$ 54,90</span><button onclick="buyAddon('200')">Comprar</button></div>
+        </div>
+      </div>
+      <p class="addon-locked-note" id="addon-locked-note">Créditos avulsos ficam disponíveis para quem assina o plano Pró.</p>
+    </div>
+  </div>
+
   <div class="toast-stack" id="toast-stack"></div>
 
   <script>
@@ -643,6 +758,13 @@
     let currentSession = null;
     let currentFormat = 'imagem_estatica';
     let lastResult = null;
+    let currentPlan = 'free';
+
+    const PLANS_INFO = [
+      { key: 'free', name: 'Free', price: 'Grátis', priceNote: '', desc: '3 créditos por dia. Ideal para testar o Pauta antes de assinar.' },
+      { key: 'pro', name: 'Pró', price: 'R$ 29,90', priceNote: '/mês', desc: '50 créditos por mês, renovados automaticamente. Dá acesso à compra de créditos avulsos.' },
+      { key: 'infinit', name: 'Infinit', price: 'R$ 69,90', priceNote: '/mês', desc: 'Créditos ilimitados. Para quem publica todos os dias e não quer pensar em limite.' },
+    ];
 
     const OBJECTIVE_LABELS = {
       engajar: 'Engajar', vender: 'Vender', educar: 'Educar',
@@ -696,14 +818,60 @@
           headers: { 'Authorization': `Bearer ${currentSession.access_token}` }
         });
         const data = await response.json();
-        if (response.ok && typeof data.credits !== 'undefined') {
-          pill.innerHTML = `<span class="dot"></span>Créditos: ${data.credits}`;
+        if (response.ok) {
+          currentPlan = data.plan || 'free';
+          const creditsText = data.credits === null ? '∞' : data.credits;
+          pill.innerHTML = `<span class="dot"></span>${data.planLabel || 'Free'} · Créditos: ${creditsText}`;
         } else {
           pill.innerHTML = `<span class="dot"></span>Créditos: disponíveis`;
         }
       } catch {
         pill.innerHTML = `<span class="dot"></span>Créditos: disponíveis`;
       }
+    }
+
+    // ---------- Modal de planos ----------
+    function openPlansModal() {
+      renderPlansGrid();
+      document.getElementById('plans-modal-overlay').classList.add('visible');
+    }
+    function closePlansModal() {
+      document.getElementById('plans-modal-overlay').classList.remove('visible');
+    }
+
+    function renderPlansGrid() {
+      const grid = document.getElementById('plans-grid');
+      grid.innerHTML = PLANS_INFO.map(plan => {
+        const isCurrent = plan.key === currentPlan;
+        return `
+          <div class="plan-card ${isCurrent ? 'current' : ''}">
+            ${isCurrent ? '<span class="plan-current-tag">Seu plano atual</span>' : ''}
+            <div class="plan-name">${plan.name}</div>
+            <div class="plan-price">${plan.price}<span>${plan.priceNote}</span></div>
+            <div class="plan-desc">${plan.desc}</div>
+            <button class="plan-btn ${isCurrent ? 'secondary' : ''}" ${isCurrent ? 'disabled' : ''}
+                    onclick="upgradePlan('${plan.key}')">
+              ${isCurrent ? 'Plano atual' : (plan.key === 'free' ? 'Voltar para o Free' : 'Fazer upgrade')}
+            </button>
+          </div>`;
+      }).join('');
+
+      const addonSection = document.getElementById('addon-section');
+      const addonNote = document.getElementById('addon-locked-note');
+      const isPro = currentPlan === 'pro';
+      addonSection.style.display = isPro ? 'block' : 'none';
+      addonNote.style.display = isPro ? 'none' : 'block';
+    }
+
+    function upgradePlan(planKey) {
+      // Pagamento ainda não está ativo — nesta fase de testes, o plano é
+      // ajustado manualmente no banco. Isso deixa de ser um toast assim
+      // que a integração de pagamento (ex: Stripe) entrar.
+      showToast('Pagamentos chegam em breve! Por enquanto, fale com o suporte para ajustar seu plano.');
+    }
+
+    function buyAddon(pack) {
+      showToast('Compra de créditos avulsos chega junto com os pagamentos, em breve.');
     }
 
     // ---------- Geração de conteúdo ----------
@@ -713,6 +881,10 @@
       const tone = document.getElementById('tone-select').value;
       const slideCount = parseInt(document.getElementById('slide-count-select').value, 10);
       const reelDuration = parseInt(document.getElementById('reel-duration-select').value, 10);
+      const tags = document.getElementById('tags-input').value
+        .split(',')
+        .map(t => t.trim())
+        .filter(Boolean);
 
       const btn = document.getElementById('generate-btn');
       const btnLabel = document.getElementById('generate-btn-label');
@@ -739,7 +911,7 @@
           },
           body: JSON.stringify({
             userId: currentSession.user.id,
-            theme, objective, tone,
+            theme, objective, tone, tags,
             format: currentFormat,
             slideCount: currentFormat === 'carrossel' ? slideCount : undefined,
             reelDuration: currentFormat === 'reels' ? reelDuration : undefined
