@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pauta · Entrar</title>
+<title>Mano · Entrar</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link rel="icon" type="image/png" href="assets/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -37,10 +37,11 @@
   html,body{margin:0;padding:0;}
   body{
     position: relative;
-    background:
-      radial-gradient(1200px 500px at 12% -10%, rgba(244,185,66,0.07), transparent 60%),
-      radial-gradient(900px 500px at 100% 0%, rgba(95,168,222,0.05), transparent 55%),
-      var(--bg);
+    background-color: var(--bg);
+    background-image: url('assets/login-bg.jpg');
+    background-size: cover;
+    background-position: center 30%;
+    background-repeat: no-repeat;
     color: var(--text);
     font-family: var(--font-body);
     min-height: 100vh;
@@ -49,6 +50,16 @@
     align-items:center;
     justify-content:center;
     padding: 24px;
+  }
+  /* Camada escura por cima da foto de fundo, pra manter o texto e o
+     card de login legíveis mesmo sobre a imagem */
+  body::after{
+    content:"";
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(11,12,16,0.35) 0%, rgba(11,12,16,0.75) 55%, rgba(11,12,16,0.92) 100%);
+    pointer-events: none;
+    z-index: 0;
   }
   body::before{
     content:"";
@@ -85,15 +96,14 @@
     margin-bottom: 24px;
   }
   .brand-mark{
-    width:44px; height:44px; border-radius:12px;
+    width:80px; height:80px; border-radius:16px;
     background: var(--surface-2);
     display:flex; align-items:center; justify-content:center;
     overflow: hidden;
     box-shadow: 0 4px 18px rgba(244,185,66,0.18);
   }
   .brand-mark img{
-    width:100%; height:100%; object-fit:cover;
-    mix-blend-mode: lighten;
+    width:82%; height:82%; object-fit:contain;
   }
   .brand-mark svg{ width:22px; height:22px; }
   .brand h1{
@@ -282,11 +292,9 @@
 
     <div class="brand">
       <div class="brand-mark">
-        <img src="assets/logo-mark.png" alt="Pauta"
-             onerror="this.replaceWith(document.getElementById('brand-mark-fallback').content.cloneNode(true))">
+        <img src="assets/logo-mark.png" alt="Mano" onerror="this.style.display='none'">
       </div>
-      <template id="brand-mark-fallback"><svg viewBox="0 0 24 24" fill="none" style="width:22px;height:22px;"><path d="M12 2L14.2 9.2L21 12L14.2 14.8L12 22L9.8 14.8L3 12L9.8 9.2L12 2Z" fill="#F4B942"/></svg></template>
-      <h1>Pauta</h1>
+      <h1>Mano</h1>
       <p>Seu agente de criação de conteúdo para redes sociais</p>
     </div>
 
@@ -338,8 +346,8 @@
   <div class="toast-stack" id="toast-stack"></div>
 
   <script>
-    const SUPABASE_URL = 'https://dbqjfgludyionrhjsjxt.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRicWpmZ2x1ZHlpb25yaGpzanh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ5NzM1MTEsImV4cCI6MjEwMDU0OTUxMX0.w1I_AyBCHriy0QBXloimRrMJuycDnl9F3JJb7TPP8Uc';
+    const SUPABASE_URL = 'https://cxeyahwtftforcgyjrxi.supabase.co';
+    const SUPABASE_ANON_KEY = 'SUA_CHAVE_ANON_DO_SUPABASE';
 
     // Pra onde levar o usuário depois de logar. Ajuste se hospedar em
     // outro caminho/subpasta.
