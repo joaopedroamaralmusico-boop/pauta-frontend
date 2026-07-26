@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pauta · Agente de criação de conteúdo</title>
+<title>Mano · Agente de criação de conteúdo</title>
 <link rel="icon" type="image/png" href="assets/favicon.png">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -93,7 +93,7 @@
   }
   .brand{ display:flex; align-items:center; gap:12px; min-width:0; }
   .brand-mark{
-    width:38px; height:38px; border-radius:10px;
+    width:56px; height:56px; border-radius:14px;
     background: var(--surface-2);
     display:flex; align-items:center; justify-content:center;
     flex-shrink:0;
@@ -102,9 +102,8 @@
   }
   .brand-mark svg{ width:19px; height:19px; }
   .brand-mark-img{
-    width:100%; height:100%;
-    object-fit: cover;
-    mix-blend-mode: lighten; /* dissolve o fundo escuro da imagem gerada por IA */
+    width:82%; height:82%;
+    object-fit: contain;
   }
   .brand-text h1{
     font-family: var(--font-display);
@@ -584,12 +583,10 @@
     <div class="header">
       <div class="brand">
         <div class="brand-mark">
-          <img src="assets/logo-mark.png" alt="Pauta" class="brand-mark-img"
-               onerror="this.replaceWith(document.getElementById('brand-mark-fallback').content.cloneNode(true))">
+          <img src="assets/logo-mark.png" alt="Mano" class="brand-mark-img" onerror="this.style.display='none'">
         </div>
-        <template id="brand-mark-fallback"><svg viewBox="0 0 24 24" fill="none" style="width:19px;height:19px;"><path d="M12 2L14.2 9.2L21 12L14.2 14.8L12 22L9.8 14.8L3 12L9.8 9.2L12 2Z" fill="#1A1300"/></svg></template>
         <div class="brand-text">
-          <h1>Pauta</h1>
+          <h1>Mano</h1>
           <p id="user-info">Carregando usuário...</p>
         </div>
       </div>
@@ -761,7 +758,7 @@
     let currentPlan = 'free';
 
     const PLANS_INFO = [
-      { key: 'free', name: 'Free', price: 'Grátis', priceNote: '', desc: '3 créditos por dia. Ideal para testar o Pauta antes de assinar.' },
+      { key: 'free', name: 'Free', price: 'Grátis', priceNote: '', desc: '3 créditos por dia. Ideal para testar o Mano antes de assinar.' },
       { key: 'pro', name: 'Pró', price: 'R$ 29,90', priceNote: '/mês', desc: '50 créditos por mês, renovados automaticamente. Dá acesso à compra de créditos avulsos.' },
       { key: 'infinit', name: 'Infinit', price: 'R$ 69,90', priceNote: '/mês', desc: 'Créditos ilimitados. Para quem publica todos os dias e não quer pensar em limite.' },
     ];
